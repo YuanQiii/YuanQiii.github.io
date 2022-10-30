@@ -1,0 +1,826 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.1">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="前言async、 await 语法是ES7出现的，是基于ES6的Promise和Generator实现的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Iterator&amp;Generator&amp;async">
+<meta property="og:url" content="http://example.com/2022/05/28/Iterator&Generator&async/index.html">
+<meta property="og:site_name" content="YuanQiii_Note">
+<meta property="og:description" content="前言async、 await 语法是ES7出现的，是基于ES6的Promise和Generator实现的">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-05-28T14:50:14.000Z">
+<meta property="article:modified_time" content="2022-05-28T14:50:14.000Z">
+<meta property="article:author" content="YuanQiii">
+<meta property="article:tag" content="Iterator">
+<meta property="article:tag" content="Generator">
+<meta property="article:tag" content="async">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/05/28/Iterator&Generator&async/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Iterator&Generator&async | YuanQiii_Note</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">YuanQiii_Note</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-about">
+
+    <a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>关于</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+  <div class="reading-progress-bar"></div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/28/Iterator&Generator&async/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="YuanQiii">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="YuanQiii_Note">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Iterator&Generator&async
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2022-05-28 22:50:14" itemprop="dateCreated datePublished" datetime="2022-05-28T22:50:14+08:00">2022-05-28</time>
+            </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/" itemprop="url" rel="index"><span itemprop="name">前端</span></a>
+                </span>
+                  ，
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/%E5%89%8D%E7%AB%AF/JavaScript/" itemprop="url" rel="index"><span itemprop="name">JavaScript</span></a>
+                </span>
+            </span>
+
+          
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span><br>
+            <span class="post-meta-item" title="本文字数">
+              <span class="post-meta-item-icon">
+                <i class="far fa-file-word"></i>
+              </span>
+                <span class="post-meta-item-text">本文字数：</span>
+              <span>7.8k</span>
+            </span>
+            <span class="post-meta-item" title="阅读时长">
+              <span class="post-meta-item-icon">
+                <i class="far fa-clock"></i>
+              </span>
+                <span class="post-meta-item-text">阅读时长 &asymp;</span>
+              <span>7 分钟</span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p><code>async</code>、 <code>await</code> 语法是<code>ES7</code>出现的，是基于<code>ES6</code>的<code>Promise</code>和<code>Generator</code>实现的</p>
+<span id="more"></span>
+
+<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
+<li><p><a href="#iteratorgeneratorasync">Iterator&amp;Generator&amp;async</a></p>
+<ul>
+<li><p><a href="#iterator">Iterator</a></p>
+<ul>
+<li><p><a href="#%E6%A6%82%E5%BF%B5">概念</a></p>
+</li>
+<li><p><a href="#%E4%BD%9C%E7%94%A8">作用</a></p>
+</li>
+<li><p><a href="#%E5%8E%9F%E7%94%9F%E5%85%B7%E5%A4%87-iterator-%E6%8E%A5%E5%8F%A3%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84">原生具备 Iterator 接口的数据结构</a></p>
+</li>
+<li><p><a href="#%E5%8E%9F%E7%90%86">原理</a></p>
+</li>
+<li><p><a href="#%E5%BA%94%E7%94%A8">应用</a></p>
+</li>
+<li><p><a href="#%E7%94%A8%E6%B3%95">用法</a></p>
+</li>
+</ul>
+</li>
+<li><p><a href="#generator">Generator</a></p>
+<ul>
+<li><p><a href="#%E6%A6%82%E5%BF%B5-1">概念</a></p>
+</li>
+<li><p><a href="#yield%E8%A1%A8%E8%BE%BE%E5%BC%8F">yield表达式</a></p>
+</li>
+<li><p><a href="#generatorprototypenext">Generator.prototype.next()</a></p>
+</li>
+<li><p><a href="#generatorprototypethrow">Generator.prototype.throw()</a></p>
+</li>
+<li><p><a href="#generatorprototypereturn">Generator.prototype.return()</a></p>
+</li>
+<li><p><a href="#nextthrowreturn-%E7%9A%84%E5%85%B1%E5%90%8C%E7%82%B9">next()、throw()、return() 的共同点</a></p>
+</li>
+<li><p><a href="#yield-%E8%A1%A8%E8%BE%BE%E5%BC%8F">yield* 表达式</a></p>
+</li>
+<li><p><a href="#%E7%94%A8%E6%B3%95-1">用法</a></p>
+</li>
+</ul>
+</li>
+<li><p><a href="#async">async</a></p>
+<ul>
+<li><p><a href="#%E6%A6%82%E5%BF%B5-2">概念</a></p>
+</li>
+<li><p><a href="#%E4%BC%98%E5%8C%96">优化</a></p>
+</li>
+<li><p><a href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86">错误处理</a></p>
+</li>
+<li><p><a href="#await%E5%91%BD%E4%BB%A4">await命令</a></p>
+</li>
+<li><p><a href="#%E7%94%A8%E6%B3%95-2">用法</a></p>
+</li>
+</ul>
+</li>
+<li><p><a href="#%E5%8F%82%E8%80%83">参考</a></p>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="Iterator-amp-Generator-amp-async"><a href="#Iterator-amp-Generator-amp-async" class="headerlink" title="Iterator&amp;Generator&amp;async"></a>Iterator&amp;Generator&amp;async</h1><h2 id="Iterator"><a href="#Iterator" class="headerlink" title="Iterator"></a>Iterator</h2><h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><ol>
+<li><p>是一种接口，为各种不同的数据结构提供统一的访问机制</p>
+</li>
+<li><p>任何数据结构只要部署 <code>Iterator</code>接口，就可以完成遍历操作（即依次处理该数据结构的所有成员）</p>
+</li>
+</ol>
+<h3 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h3><ol>
+<li><p>各种数据结构，提供一个统一的、简便的访问接口</p>
+</li>
+<li><p>使得数据结构的成员能够按某种次序排列</p>
+</li>
+<li><p>ES6 创造了一种新的遍历命令<code>for...of</code>循环，<code>Iterator</code>接口主要供<code>for...of</code>消费</p>
+</li>
+</ol>
+<h3 id="原生具备-Iterator-接口的数据结构"><a href="#原生具备-Iterator-接口的数据结构" class="headerlink" title="原生具备 Iterator 接口的数据结构"></a>原生具备 Iterator 接口的数据结构</h3><ol>
+<li><p><code>Array</code></p>
+</li>
+<li><p><code>Map</code></p>
+</li>
+<li><p><code>Set</code></p>
+</li>
+<li><p><code>String</code></p>
+</li>
+<li><p><code>TypedArray</code></p>
+</li>
+<li><p>函数的 <code>arguments</code>对象</p>
+</li>
+<li><p><code>NodeList</code>对象</p>
+</li>
+</ol>
+<h3 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h3><ol>
+<li><p>创建一个指针对象，指向当前数据结构的起始位置。也就是说，遍历器对象本质上，就是一个指针对象</p>
+</li>
+<li><p>第一次调用指针对象的<code>next</code>方法，可以将指针指向数据结构的第一个成员</p>
+</li>
+<li><p>第二次调用指针对象的<code>next</code>方法，指针就指向数据结构的第二个成员</p>
+</li>
+<li><p>不断调用指针对象的<code>next</code>方法，直到它指向数据结构的结束位置</p>
+</li>
+</ol>
+<h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><ol>
+<li><p>解构赋值时，会默认调用<code>Symbol.iterator</code>方法</p>
+</li>
+<li><p>扩展运算符（<code>...</code>）也会调用默认的 <code>Iterator</code>接口</p>
+</li>
+<li><p><code>yield*</code>后面跟的是一个可遍历的结构，它会调用该结构的遍历器接口</p>
+</li>
+<li><p>对于类似数组的对象（存在数值键名和<code>length</code>属性），部署 <code>Iterator</code>接口，有一个简便方法，就是<code>Symbol.iterator</code>方法直接引用数组的 <code>Iterator</code>接口</p>
+</li>
+</ol>
+<h3 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span> <span class="title function_">myIterator</span>(<span class="params">array</span>) &#123;</span><br><span class="line">    <span class="keyword">var</span> nextIndex = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">return</span> &#123;</span><br><span class="line">        <span class="attr">next</span>: <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">            <span class="keyword">return</span> nextIndex &lt; array.<span class="property">length</span> ?</span><br><span class="line">                &#123; <span class="attr">value</span>: array[nextIndex++], <span class="attr">done</span>: <span class="literal">false</span> &#125; :</span><br><span class="line">                &#123; <span class="attr">value</span>: <span class="literal">undefined</span>, <span class="attr">done</span>: <span class="literal">true</span> &#125;;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">let</span> it = <span class="title function_">makeIterator</span>([<span class="string">&#x27;a&#x27;</span>, <span class="string">&#x27;b&#x27;</span>]);</span><br><span class="line"></span><br><span class="line">it.<span class="title function_">next</span>() <span class="comment">// &#123; value: &quot;a&quot;, done: false &#125;</span></span><br><span class="line">it.<span class="title function_">next</span>() <span class="comment">// &#123; value: &quot;b&quot;, done: false &#125;</span></span><br><span class="line">it.<span class="title function_">next</span>() <span class="comment">// &#123; value: undefined, done: true &#125;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 对象部署Iterator接口</span></span><br><span class="line"><span class="title class_">Object</span>.<span class="property"><span class="keyword">prototype</span></span>[<span class="title class_">Symbol</span>.<span class="property">iterator</span>] = <span class="keyword">function</span>(<span class="params"></span>)&#123;</span><br><span class="line">  <span class="keyword">let</span> keys = <span class="title class_">Object</span>.<span class="title function_">keys</span>(<span class="variable language_">this</span>)</span><br><span class="line">  <span class="keyword">let</span> index = <span class="number">0</span></span><br><span class="line">  <span class="keyword">return</span> &#123;</span><br><span class="line">    <span class="attr">next</span>: <span class="function">() =&gt;</span> &#123;</span><br><span class="line">      <span class="keyword">if</span>(index &lt; keys.<span class="property">length</span>)&#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">          <span class="attr">value</span>: <span class="variable language_">this</span>[keys[index++]],</span><br><span class="line">          <span class="attr">done</span>: <span class="literal">false</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;<span class="keyword">else</span>&#123;</span><br><span class="line">        <span class="keyword">return</span> &#123;</span><br><span class="line">          <span class="attr">value</span>: <span class="literal">undefined</span>,</span><br><span class="line">          <span class="attr">done</span>: <span class="literal">true</span></span><br><span class="line">        &#125;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 类似数组的对象（存在数值键名和length属性），部署 Iterator 接口</span></span><br><span class="line"><span class="title class_">NodeList</span>.<span class="property"><span class="keyword">prototype</span></span>[<span class="title class_">Symbol</span>.<span class="property">iterator</span>] = <span class="title class_">Array</span>.<span class="property"><span class="keyword">prototype</span></span>[<span class="title class_">Symbol</span>.<span class="property">iterator</span>];</span><br><span class="line"><span class="comment">// 或者</span></span><br><span class="line"><span class="title class_">NodeList</span>.<span class="property"><span class="keyword">prototype</span></span>[<span class="title class_">Symbol</span>.<span class="property">iterator</span>] = [][<span class="title class_">Symbol</span>.<span class="property">iterator</span>];</span><br><span class="line"></span><br><span class="line">[...<span class="variable language_">document</span>.<span class="title function_">querySelectorAll</span>(<span class="string">&#x27;div&#x27;</span>)] <span class="comment">// 可以执行了</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="Generator"><a href="#Generator" class="headerlink" title="Generator"></a>Generator</h2><h3 id="概念-1"><a href="#概念-1" class="headerlink" title="概念"></a>概念</h3><ol>
+<li><p>通过 <code>function *</code>声明，函数体内部使用<code>yield</code>表达式，作为对象属性时，  <code>* myGeneratorMethod</code></p>
+</li>
+<li><p>执行 <code>Generator</code>函数会返回一个遍历器对象（<code>Iterator Object</code>），实现<code>Iterator</code>接口</p>
+</li>
+<li><p><code>Generator</code>函数从暂停状态到恢复运行，它的上下文状态（<code>context</code>）是不变的，<code>Generator </code>函数执行产生的上下文环境，一旦遇到<code>yield</code>命令，就会暂时退出堆栈，但是并不消失，里面的所有变量和对象会冻结在当前状态，等到对它执行<code>next</code>命令时，这个上下文环境又会重新加入调用栈，冻结的变量和对象恢复执行</p>
+</li>
+<li><p>箭头函数不能定义生成器函数</p>
+</li>
+</ol>
+<h3 id="yield表达式"><a href="#yield表达式" class="headerlink" title="yield表达式"></a>yield表达式</h3><ol>
+<li><p><code>yield</code>表达式本身没有返回值，或者说总是返回<code>undefined</code></p>
+</li>
+<li><p><code>yield</code>表达式就是暂停标志</p>
+</li>
+<li><p><code>yield</code>表达式后面的表达式，只有当调用<code>next</code>方法、内部指针指向该语句时才会执行</p>
+</li>
+<li><p><code>yield</code>表达式只能用在 <code>Generator</code>函数里面，用在其他地方都会报错</p>
+</li>
+<li><p><code>yield</code>表达式如果用在另一个表达式之中，必须放在圆括号里面</p>
+</li>
+<li><p><code>yield</code>表达式用作函数参数或放在赋值表达式的右边，可以不加括号</p>
+</li>
+<li><p><code>yield</code>表达式后面接函数的话，到了对应暂停点<code>yield</code>，会马上执行此函数，并且该函数的执行返回值，会被当做此暂停点对象的</p>
+</li>
+<li><p><code>yield</code>表达式后面接<code>Promise</code>，都是<code>pending</code>状态的<code>Promise</code>对象</p>
+</li>
+<li><p><code>yield</code>与<code>return</code>异同</p>
+<ol>
+<li><p>相同点</p>
+<ol>
+<li><p>都能返回语句后面的那个表达式的值</p>
+</li>
+<li><p>都可以暂停函数执行</p>
+</li>
+</ol>
+</li>
+<li><p>区别</p>
+<ol>
+<li><p>一个函数可以有多个 <code>yield</code>，但是只能有一个 <code>return</code></p>
+</li>
+<li><p><code>yield </code>有位置记忆功能，<code>return </code>没有</p>
+</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="Generator-prototype-next"><a href="#Generator-prototype-next" class="headerlink" title="Generator.prototype.next()"></a>Generator.prototype.next()</h3><ol>
+<li><p>参数</p>
+<ol>
+<li><p><code>next</code>方法可以带一个参数，该参数就会被当作上一个<code>yield</code>表达式的返回值</p>
+</li>
+<li><p>由于<code>next</code>方法的参数表示上一个<code>yield</code>表达式的返回值，所以在第一次使用<code>next</code>方法时，传递参数是无效的，可以理解为第一个<code>next</code>方法用来启动遍历器对象</p>
+</li>
+</ol>
+</li>
+<li><p>运行逻辑</p>
+<ol>
+<li><p>遇到<code>yield</code>表达式，就暂停执行后面的操作，并将紧跟在<code>yield</code>后面的那个表达式的值，作为返回的对象的<code>value</code>属性值</p>
+</li>
+<li><p>下一次调用<code>next</code>方法时，再继续往下执行，直到遇到下一个<code>yield</code>表达式</p>
+</li>
+<li><p>如果没有再遇到新的<code>yield</code>表达式，就一直运行到函数结束，直到<code>return</code>语句为止，并将<code>return</code>语句后面的表达式的值，作为返回的对象的<code>value</code>属性值</p>
+</li>
+<li><p>如果该函数没有<code>return</code>语句，则返回的对象的<code>value</code>属性值为<code>undefined</code></p>
+</li>
+</ol>
+</li>
+</ol>
+<h3 id="Generator-prototype-throw"><a href="#Generator-prototype-throw" class="headerlink" title="Generator.prototype.throw()"></a>Generator.prototype.throw()</h3><ol>
+<li><p>Generator 函数返回的迭代器对象，都有一个<code>throw</code>方法，可以在函数体外抛出错误，然后在 Generator 函数体内捕获</p>
+</li>
+<li><p><code>throw</code>方法可以接受一个参数，该参数会被<code>catch</code>语句接收，建议抛出<code>Error</code>对象的实例</p>
+</li>
+<li><p>全局的<code>throw</code>命令只能被函数体外的<code>catch</code>语句捕获</p>
+</li>
+<li><p>如果 Generator 函数内部没有部署<code>try...catch</code>代码块，那么<code>throw</code>方法抛出的错误，将被外部<code>try...catch</code>代码块捕获</p>
+</li>
+<li><p>如果 Generator 函数内部和外部，都没有部署<code>try...catch</code>代码块，那么程序将报错，直接中断执行</p>
+</li>
+<li><p><code>throw</code>方法抛出的错误要被内部捕获，前提是必须至少执行过一次<code>next</code>方法</p>
+</li>
+<li><p><code>throw</code>方法被捕获以后，会附带执行下一条<code>yield</code>表达式。也就是说，会附带执行一次<code>next</code>方法</p>
+</li>
+<li><p>多个<code>yield</code>表达式，可以只用一个<code>try...catch</code>代码块来捕获错误</p>
+</li>
+<li><p>一旦 Generator 执行过程中抛出错误，且没有被内部捕获，就不会再执行下去了，即 JavaScript 引擎认为这个 Generator 已经运行结束了</p>
+</li>
+</ol>
+<h3 id="Generator-prototype-return"><a href="#Generator-prototype-return" class="headerlink" title="Generator.prototype.return()"></a>Generator.prototype.return()</h3><ol>
+<li><p><code>Generator</code>函数返回的遍历器对象，有一个<code>return()</code>方法，可以提供参数作为返回值，不提供参数，则返回值的<code>value</code>属性为<code>undefined</code>，不体东并且终结遍历 <code>Generator</code>函数</p>
+</li>
+<li><p>如果 <code>Generator</code>函数内部有<code>try...finally</code>代码块，且正在执行<code>try</code>代码块，那么<code>return()</code>方法会导致立刻进入<code>finally</code>代码块，执行完以后，整个函数才会结束</p>
+</li>
+</ol>
+<h3 id="next-、throw-、return-的共同点"><a href="#next-、throw-、return-的共同点" class="headerlink" title="next()、throw()、return() 的共同点"></a>next()、throw()、return() 的共同点</h3><ol>
+<li><p>都是让 <code>Generator</code>函数恢复执行</p>
+</li>
+<li><p><code>next()</code>是将<code>yield</code>表达式替换成一个值</p>
+</li>
+<li><p><code>throw()</code>是将<code>yield</code>表达式替换成一个<code>throw</code>语句</p>
+</li>
+<li><p><code>return()</code>是将<code>yield</code>表达式替换成一个<code>return</code>语句</p>
+</li>
+</ol>
+<h3 id="yield-表达式"><a href="#yield-表达式" class="headerlink" title="yield* 表达式"></a>yield* 表达式</h3><ol>
+<li><p>用来在一个 <code>Generator</code>函数里面执行另一个 <code>Generator</code>函数</p>
+</li>
+<li><p><code>yield*</code>后面的 <code>Generator</code>函数（没有<code>return</code>语句时），等同于在 <code>Generator</code>函数内部，部署一个<code>for...of</code>循环</p>
+</li>
+<li><p>任何数据结构只要有 <code>Iterator</code>接口，就可以被<code>yield*</code>遍历，<code>yield*</code>后面跟着一个数组会遍历数组成员</p>
+</li>
+<li><p>被代理的 <code>Generator</code>函数有<code>return</code>语句，那么就可以向代理它的 <code>Generator</code>函数返回数据</p>
+</li>
+</ol>
+<h3 id="用法-1"><a href="#用法-1" class="headerlink" title="用法"></a>用法</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">function</span>* <span class="title function_">myGenerator</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">&#x27;hello&#x27;</span>;</span><br><span class="line">    <span class="keyword">yield</span> <span class="string">&#x27;world&#x27;</span>;</span><br><span class="line">    <span class="keyword">return</span> <span class="string">&#x27;ending&#x27;</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">let</span> myGen = <span class="title function_">myGenerator</span>();</span><br><span class="line"></span><br><span class="line">myGen.<span class="title function_">next</span>()</span><br><span class="line"><span class="comment">// &#123; value: &#x27;hello&#x27;, done: false &#125;</span></span><br><span class="line"></span><br><span class="line">myGen.<span class="title function_">next</span>()</span><br><span class="line"><span class="comment">// &#123; value: &#x27;world&#x27;, done: false &#125;</span></span><br><span class="line"></span><br><span class="line">myGen.<span class="title function_">next</span>()</span><br><span class="line"><span class="comment">// &#123; value: &#x27;ending&#x27;, done: true &#125;</span></span><br><span class="line"></span><br><span class="line">myGen.<span class="title function_">next</span>()</span><br><span class="line"><span class="comment">// &#123; value: undefined, done: true &#125;</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 对象部署iterator接口</span></span><br><span class="line"><span class="title class_">Object</span>.<span class="property"><span class="keyword">prototype</span></span>[<span class="title class_">Symbol</span>.<span class="property">iterator</span>] = <span class="keyword">function</span>*() &#123;</span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> [key, value] <span class="keyword">of</span> <span class="title class_">Object</span>.<span class="title function_">entries</span>(<span class="variable language_">this</span>)) &#123;</span><br><span class="line">    <span class="keyword">yield</span> &#123; key, value &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h2 id="async"><a href="#async" class="headerlink" title="async"></a>async</h2><h3 id="概念-2"><a href="#概念-2" class="headerlink" title="概念"></a>概念</h3><ol>
+<li><p><code>await</code>只能在<code>async</code>函数中使用，不然会报错</p>
+</li>
+<li><p><code>async/await</code>的优势在于处理由多个<code>Promise</code>组成的 <code>then</code>链回调地狱的问题，<code>async/await</code>相当于对<code>Promise</code>的进一步优化</p>
+</li>
+<li><p><code>async</code>作用是用同步方式，执行异步操作，只有<code>async</code>函数内部的异步操作执行完，才会执行<code>then</code>方法指定的回调函数</p>
+</li>
+<li><p><code>Generator</code>函数的语法糖，将 <code>Generator</code>函数的星号<code>*</code>替换成<code>async</code>，将<code>yield</code>替换成<code>await</code></p>
+</li>
+</ol>
+<h3 id="优化"><a href="#优化" class="headerlink" title="优化"></a>优化</h3><ol>
+<li><p><code>async</code>函数自带执行器，执行与普通函数一样，不需要调用<code>next</code>方法</p>
+</li>
+<li><p>语义更清楚，<code>async</code>表示函数里有异步操作，<code>await</code>表示紧跟在后面的表达式需要等待结果</p>
+</li>
+<li><p><code>async</code>函数的<code>await</code>命令后面，可以是 <code>Promise</code>对象和原始类型的值，<code>await any</code>可以理解成用 <code>Promise.resolve(any)</code> 处理</p>
+</li>
+<li><p><code>async</code>函数的返回值是 <code>Promise</code>对象，有无值看有无<code>return</code>值，比操作<code>Iterator</code>对象方便</p>
+</li>
+</ol>
+<h3 id="错误处理"><a href="#错误处理" class="headerlink" title="错误处理"></a>错误处理</h3><ol>
+<li><p><code>async</code>函数内部抛出错误，会导致返回的 Promise 对象变为<code>reject</code>状态，抛出的错误对象会被<code>catch</code>方法回调函数接收到</p>
+</li>
+<li><p>如果<code>await</code>后面的异步操作出错，那么等同于<code>async</code>函数返回的 Promise 对象被<code>reject</code></p>
+</li>
+<li><p>防止出错的方法，也是将其放在<code>try...catch</code>代码块之中，有多个<code>await</code>命令，可以统一放在<code>try...catch</code>结构中</p>
+</li>
+</ol>
+<h3 id="await命令"><a href="#await命令" class="headerlink" title="await命令"></a>await命令</h3><ol>
+<li><p><code>await</code>命令后面是一个 <code>Promise</code>对象，返回该对象的结果，如果不是 <code>Promise</code>对象，就直接返回对应的值</p>
+</li>
+<li><p><code>await</code>命令后面是一个<code>thenable</code>对象（即定义了<code>then</code>方法的对象），那么<code>await</code>会将其等同于 <code>Promise</code>对象</p>
+</li>
+<li><p><code>await</code>命令后面的 <code>Promise</code>对象如果变为<code>reject</code>状态，则<code>reject</code>的参数会被<code>catch</code>方法的回调函数接收到</p>
+</li>
+<li><p>任何一个<code>await</code>语句后面的 <code>Promise</code>对象变为<code>reject</code>状态，那么整个<code>async</code>函数都会中断执行</p>
+</li>
+</ol>
+<h3 id="用法-2"><a href="#用法-2" class="headerlink" title="用法"></a>用法</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> fs = <span class="built_in">require</span>(<span class="string">&#x27;fs&#x27;</span>);</span><br><span class="line"><span class="keyword">const</span> asyncReadFile = <span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> f1 = <span class="keyword">await</span> <span class="title function_">readFile</span>(<span class="string">&#x27;/etc/fstab&#x27;</span>);</span><br><span class="line">    <span class="keyword">const</span> f2 = <span class="keyword">await</span> <span class="title function_">readFile</span>(<span class="string">&#x27;/etc/shells&#x27;</span>);</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(f1.<span class="title function_">toString</span>());</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(f2.<span class="title function_">toString</span>());</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Generator函数的语法糖，实现原理</span></span><br><span class="line"><span class="keyword">function</span> <span class="title function_">generatorToAsync</span>(<span class="params">generatorFn</span>) &#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">const</span> gen = generatorFn.<span class="title function_">apply</span>(<span class="variable language_">this</span>, <span class="variable language_">arguments</span>) <span class="comment">// gen有可能传参</span></span><br><span class="line"></span><br><span class="line">        <span class="comment">// 返回一个Promise</span></span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">new</span> <span class="title class_">Promise</span>(<span class="function">(<span class="params">resolve, reject</span>) =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">function</span> <span class="title function_">go</span>(<span class="params">key, arg</span>) &#123;</span><br><span class="line">                <span class="keyword">let</span> res</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    <span class="comment">// 这里有可能会执行返回reject状态的Promise</span></span><br><span class="line">                    res = gen[key](arg)</span><br><span class="line">                &#125; <span class="keyword">catch</span> (error) &#123;</span><br><span class="line">                    <span class="comment">// 报错的话会走catch，直接reject</span></span><br><span class="line">                    <span class="keyword">return</span> <span class="title function_">reject</span>(error)</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">// 解构获得value和done</span></span><br><span class="line">                <span class="keyword">const</span> &#123; value, done &#125; = res</span><br><span class="line"></span><br><span class="line">                <span class="comment">// 如果done为true，说明走完了，进行resolve(value)</span></span><br><span class="line">                <span class="keyword">if</span> (done) &#123;</span><br><span class="line">                    <span class="keyword">return</span> <span class="title function_">resolve</span>(value)</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">// 如果done为false，说明没走完，还得继续走</span></span><br><span class="line">                    <span class="comment">// value有可能是：常量，Promise，Promise有可能是成功或者失败</span></span><br><span class="line">                    <span class="keyword">return</span> <span class="title class_">Promise</span>.<span class="title function_">resolve</span>(value).<span class="title function_">then</span>(<span class="function"><span class="params">val</span> =&gt;</span> <span class="title function_">go</span>(<span class="string">&#x27;next&#x27;</span>, val), <span class="function"><span class="params">err</span> =&gt;</span> <span class="title function_">go</span>([<span class="string">&#x27;throw&#x27;</span>, err]))</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            <span class="comment">// 第一次执行</span></span><br><span class="line">            <span class="title function_">go</span>(<span class="string">&#x27;next&#x27;</span>)   </span><br><span class="line">        &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// async 函数有多种使用形式</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数声明</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">foo</span>(<span class="params"></span>) &#123;&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 函数表达式</span></span><br><span class="line"><span class="keyword">const</span> foo = <span class="keyword">async</span> <span class="keyword">function</span> (<span class="params"></span>) &#123;&#125;;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 对象的方法</span></span><br><span class="line"><span class="keyword">let</span> obj = &#123; <span class="keyword">async</span> <span class="title function_">foo</span>(<span class="params"></span>) &#123;&#125; &#125;;</span><br><span class="line">obj.<span class="title function_">foo</span>().<span class="title function_">then</span>(...)</span><br><span class="line"></span><br><span class="line"><span class="comment">// Class 的方法</span></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Storage</span> &#123;</span><br><span class="line">  <span class="title function_">constructor</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">cachePromise</span> = caches.<span class="title function_">open</span>(<span class="string">&#x27;avatars&#x27;</span>);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="keyword">async</span> <span class="title function_">getAvatar</span>(<span class="params">name</span>) &#123;</span><br><span class="line">    <span class="keyword">const</span> cache = <span class="keyword">await</span> <span class="variable language_">this</span>.<span class="property">cachePromise</span>;</span><br><span class="line">    <span class="keyword">return</span> cache.<span class="title function_">match</span>(<span class="string">`/avatars/<span class="subst">$&#123;name&#125;</span>.jpg`</span>);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> storage = <span class="keyword">new</span> <span class="title class_">Storage</span>();</span><br><span class="line">storage.<span class="title function_">getAvatar</span>(<span class="string">&#x27;jake&#x27;</span>).<span class="title function_">then</span>(…);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 箭头函数</span></span><br><span class="line"><span class="keyword">const</span> <span class="title function_">foo</span> = <span class="keyword">async</span> (<span class="params"></span>) =&gt; &#123;&#125;;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 错误处理</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 写法一</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">myFunction</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">await</span> <span class="title function_">somethingThatReturnsAPromise</span>();</span><br><span class="line">  &#125; <span class="keyword">catch</span> (err) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(err);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写法二</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">myFunction</span>(<span class="params"></span>) &#123;</span><br><span class="line">  <span class="keyword">await</span> <span class="title function_">somethingThatReturnsAPromise</span>()</span><br><span class="line">  .<span class="title function_">catch</span>(<span class="keyword">function</span> (<span class="params">err</span>) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(err);</span><br><span class="line">  &#125;);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 多个await命令后面的异步操作，如果不存在继发关系，最好让它们同时触发，缩短程序的执行时间</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 写法一</span></span><br><span class="line"><span class="keyword">let</span> [foo, bar] = <span class="keyword">await</span> <span class="title class_">Promise</span>.<span class="title function_">all</span>([<span class="title function_">getFoo</span>(), <span class="title function_">getBar</span>()]);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 写法二</span></span><br><span class="line"><span class="keyword">let</span> fooPromise = <span class="title function_">getFoo</span>();</span><br><span class="line"><span class="keyword">let</span> barPromise = <span class="title function_">getBar</span>();</span><br><span class="line"><span class="keyword">let</span> foo = <span class="keyword">await</span> fooPromise;</span><br><span class="line"><span class="keyword">let</span> bar = <span class="keyword">await</span> barPromise;</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 一组异步操作，需要按照顺序完成</span></span><br><span class="line"><span class="keyword">async</span> <span class="keyword">function</span> <span class="title function_">logInOrder</span>(<span class="params">urls</span>) &#123;</span><br><span class="line">  <span class="comment">// 并发读取远程URL</span></span><br><span class="line">  <span class="keyword">const</span> textPromises = urls.<span class="title function_">map</span>(<span class="keyword">async</span> url =&gt; &#123;</span><br><span class="line">    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="title function_">fetch</span>(url);</span><br><span class="line">    <span class="keyword">return</span> response.<span class="title function_">text</span>();</span><br><span class="line">  &#125;);</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 按次序输出</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="keyword">const</span> textPromise <span class="keyword">of</span> textPromises) &#123;</span><br><span class="line">    <span class="variable language_">console</span>.<span class="title function_">log</span>(<span class="keyword">await</span> textPromise);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/6844903512845860872#heading-10" title="这一次，彻底弄懂 JavaScript 执行机制 - 掘金 (juejin.cn)">这一次，彻底弄懂 JavaScript 执行机制 - 掘金 (juejin.cn)</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="http://latentflip.com/loupe" title="http://latentflip.com/loupe">http://latentflip.com/loupe</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://juejin.cn/post/7007031572238958629" title="7张图，20分钟就能搞定的async/await原理！为什么要拖那么久？ - 掘金 (juejin.cn)">7张图，20分钟就能搞定的async&#x2F;await原理！为什么要拖那么久？ - 掘金 (juejin.cn)</a></p>
+</li>
+<li><p><a target="_blank" rel="noopener" href="https://es6.ruanyifeng.com/#docs/generator" title="Generator 函数的语法 - ECMAScript 6入门 (ruanyifeng.com)">Generator 函数的语法 - ECMAScript 6入门 (ruanyifeng.com)</a></p>
+</li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Iterator/" rel="tag"># Iterator</a>
+              <a href="/tags/Generator/" rel="tag"># Generator</a>
+              <a href="/tags/async/" rel="tag"># async</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2022/04/20/Promise/" rel="prev" title="Promise">
+      <i class="fa fa-chevron-left"></i> Promise
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2022/06/24/Vue2%E5%93%8D%E5%BA%94%E5%BC%8F%E5%8E%9F%E7%90%86/" rel="next" title="Vue2响应式原理">
+      Vue2响应式原理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95"><span class="nav-number">2.</span> <span class="nav-text">目录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#Iterator-amp-Generator-amp-async"><span class="nav-number"></span> <span class="nav-text">Iterator&amp;Generator&amp;async</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Iterator"><span class="nav-number">1.</span> <span class="nav-text">Iterator</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%9C%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">作用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%94%9F%E5%85%B7%E5%A4%87-Iterator-%E6%8E%A5%E5%8F%A3%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84"><span class="nav-number">1.3.</span> <span class="nav-text">原生具备 Iterator 接口的数据结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%90%86"><span class="nav-number">1.4.</span> <span class="nav-text">原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BA%94%E7%94%A8"><span class="nav-number">1.5.</span> <span class="nav-text">应用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%B3%95"><span class="nav-number">1.6.</span> <span class="nav-text">用法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Generator"><span class="nav-number">2.</span> <span class="nav-text">Generator</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5-1"><span class="nav-number">2.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yield%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">2.2.</span> <span class="nav-text">yield表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generator-prototype-next"><span class="nav-number">2.3.</span> <span class="nav-text">Generator.prototype.next()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generator-prototype-throw"><span class="nav-number">2.4.</span> <span class="nav-text">Generator.prototype.throw()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Generator-prototype-return"><span class="nav-number">2.5.</span> <span class="nav-text">Generator.prototype.return()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#next-%E3%80%81throw-%E3%80%81return-%E7%9A%84%E5%85%B1%E5%90%8C%E7%82%B9"><span class="nav-number">2.6.</span> <span class="nav-text">next()、throw()、return() 的共同点</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#yield-%E8%A1%A8%E8%BE%BE%E5%BC%8F"><span class="nav-number">2.7.</span> <span class="nav-text">yield* 表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%B3%95-1"><span class="nav-number">2.8.</span> <span class="nav-text">用法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#async"><span class="nav-number">3.</span> <span class="nav-text">async</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A6%82%E5%BF%B5-2"><span class="nav-number">3.1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%8C%96"><span class="nav-number">3.2.</span> <span class="nav-text">优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%94%99%E8%AF%AF%E5%A4%84%E7%90%86"><span class="nav-number">3.3.</span> <span class="nav-text">错误处理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#await%E5%91%BD%E4%BB%A4"><span class="nav-number">3.4.</span> <span class="nav-text">await命令</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8%E6%B3%95-2"><span class="nav-number">3.5.</span> <span class="nav-text">用法</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">4.</span> <span class="nav-text">参考</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">YuanQiii</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">12</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">4</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">24</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YuanQiii</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-chart-area"></i>
+    </span>
+      <span class="post-meta-item-text">站点总字数：</span>
+    <span title="站点总字数">91k</span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item-icon">
+      <i class="fa fa-coffee"></i>
+    </span>
+      <span class="post-meta-item-text">站点阅读时长 &asymp;</span>
+    <span title="站点阅读时长">1:23</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+<br />
+<!-- 网站运行时间的设置 -->
+<span id="timeDate">载入天数...</span>
+<span id="times">载入时分秒...</span>
+<script>
+    var now = new Date();
+    function createtime() {
+        var grt= new Date("10/01/2021 15:54:40");//此处修改你的建站时间或者网站上线时间
+        now.setTime(now.getTime()+250);
+        days = (now - grt ) / 1000 / 60 / 60 / 24; dnum = Math.floor(days);
+        hours = (now - grt ) / 1000 / 60 / 60 - (24 * dnum); hnum = Math.floor(hours);
+        if(String(hnum).length ==1 ){hnum = "0" + hnum;} minutes = (now - grt ) / 1000 /60 - (24 * 60 * dnum) - (60 * hnum);
+        mnum = Math.floor(minutes); if(String(mnum).length ==1 ){mnum = "0" + mnum;}
+        seconds = (now - grt ) / 1000 - (24 * 60 * 60 * dnum) - (60 * 60 * hnum) - (60 * mnum);
+        snum = Math.round(seconds); if(String(snum).length ==1 ){snum = "0" + snum;}
+        document.getElementById("timeDate").innerHTML = "本站已安全运行 "+dnum+" 天 ";
+        document.getElementById("times").innerHTML = hnum + " 小时 " + mnum + " 分 " + snum + " 秒";
+    }
+setInterval("createtime()",250);
+</script>
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="fa fa-eye"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
