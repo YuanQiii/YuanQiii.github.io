@@ -19,13 +19,13 @@
 
 <script id="hexo-configurations">
     var NexT = window.NexT || {};
-    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+    var CONFIG = {"hostname":"yuanqiii.cc","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
   </script>
 
   <meta name="description" content="前言方便记忆和预览全部ES6特性">
 <meta property="og:type" content="article">
 <meta property="og:title" content="ES6特性">
-<meta property="og:url" content="http://example.com/2022/10/09/ES6%E7%89%B9%E6%80%A7/index.html">
+<meta property="og:url" content="https://yuanqiii.cc/2022/10/09/ES6%E7%89%B9%E6%80%A7/index.html">
 <meta property="og:site_name" content="YuanQiii_Note">
 <meta property="og:description" content="前言方便记忆和预览全部ES6特性">
 <meta property="og:locale" content="zh_CN">
@@ -35,7 +35,7 @@
 <meta property="article:tag" content="ES6">
 <meta name="twitter:card" content="summary">
 
-<link rel="canonical" href="http://example.com/2022/10/09/ES6%E7%89%B9%E6%80%A7/">
+<link rel="canonical" href="https://yuanqiii.cc/2022/10/09/ES6%E7%89%B9%E6%80%A7/">
 
 
 <script id="page-configurations">
@@ -197,7 +197,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2022/10/09/ES6%E7%89%B9%E6%80%A7/">
+    <link itemprop="mainEntityOfPage" href="https://yuanqiii.cc/2022/10/09/ES6%E7%89%B9%E6%80%A7/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -249,14 +249,14 @@
                 <i class="far fa-file-word"></i>
               </span>
                 <span class="post-meta-item-text">本文字数：</span>
-              <span>22k</span>
+              <span>21k</span>
             </span>
             <span class="post-meta-item" title="阅读时长">
               <span class="post-meta-item-icon">
                 <i class="far fa-clock"></i>
               </span>
                 <span class="post-meta-item-text">阅读时长 &asymp;</span>
-              <span>20 分钟</span>
+              <span>19 分钟</span>
             </span>
 
         </div>
@@ -271,56 +271,6 @@
         <h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>方便记忆和预览全部<code>ES6</code>特性</p>
 <span id="more"></span>
 
-<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
-<li><p><a href="#es6%E7%89%B9%E6%80%A7">ES6特性</a></p>
-<ul>
-<li><p><a href="#%E5%A3%B0%E6%98%8E">声明</a></p>
-</li>
-<li><p><a href="#%E8%A7%A3%E6%9E%84%E8%B5%8B%E5%80%BC">解构赋值</a></p>
-</li>
-<li><p><a href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%89%A9%E5%B1%95">字符串扩展</a></p>
-</li>
-<li><p><a href="#%E6%95%B0%E5%80%BC%E6%89%A9%E5%B1%95">数值扩展</a></p>
-</li>
-<li><p><a href="#%E5%AF%B9%E8%B1%A1%E6%89%A9%E5%B1%95">对象扩展</a></p>
-</li>
-<li><p><a href="#%E6%95%B0%E7%BB%84%E6%89%A9%E5%B1%95">数组扩展</a></p>
-</li>
-<li><p><a href="#%E5%87%BD%E6%95%B0%E6%89%A9%E5%B1%95">函数扩展</a></p>
-</li>
-<li><p><a href="#%E6%AD%A3%E5%88%99%E6%89%A9%E5%B1%95">正则扩展</a></p>
-</li>
-<li><p><a href="#symbol">Symbol</a></p>
-</li>
-<li><p><a href="#set">Set</a></p>
-</li>
-<li><p><a href="#weakset">WeakSet</a></p>
-</li>
-<li><p><a href="#map">Map</a></p>
-</li>
-<li><p><a href="#weakmap">WeakMap</a></p>
-</li>
-<li><p><a href="#proxy">Proxy</a></p>
-</li>
-<li><p><a href="#reflect">Reflect</a></p>
-</li>
-<li><p><a href="#class">Class</a></p>
-</li>
-<li><p><a href="#module">Module</a></p>
-</li>
-<li><p><a href="#iterator">Iterator</a></p>
-</li>
-<li><p><a href="#promise">Promise</a></p>
-</li>
-<li><p><a href="#generator">Generator</a></p>
-</li>
-<li><p><a href="#async">Async</a></p>
-</li>
-<li><p><a href="#%E5%8F%82%E8%80%83">参考</a></p>
-</li>
-</ul>
-</li>
-</ul>
 <h1 id="ES6特性"><a href="#ES6特性" class="headerlink" title="ES6特性"></a>ES6特性</h1><h2 id="声明"><a href="#声明" class="headerlink" title="声明"></a>声明</h2><ol>
 <li><p><code>const</code>命令：声明常量</p>
 </li>
@@ -2041,7 +1991,7 @@
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E5%BD%95"><span class="nav-number">2.</span> <span class="nav-text">目录</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ES6%E7%89%B9%E6%80%A7"><span class="nav-number"></span> <span class="nav-text">ES6特性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">声明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%84%E8%B5%8B%E5%80%BC"><span class="nav-number">2.</span> <span class="nav-text">解构赋值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%89%A9%E5%B1%95"><span class="nav-number">3.</span> <span class="nav-text">字符串扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%80%BC%E6%89%A9%E5%B1%95"><span class="nav-number">4.</span> <span class="nav-text">数值扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E6%89%A9%E5%B1%95"><span class="nav-number">5.</span> <span class="nav-text">对象扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E6%89%A9%E5%B1%95"><span class="nav-number">6.</span> <span class="nav-text">数组扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E6%89%A9%E5%B1%95"><span class="nav-number">7.</span> <span class="nav-text">函数扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E6%89%A9%E5%B1%95"><span class="nav-number">8.</span> <span class="nav-text">正则扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Symbol"><span class="nav-number">9.</span> <span class="nav-text">Symbol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Set"><span class="nav-number">10.</span> <span class="nav-text">Set</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WeakSet"><span class="nav-number">11.</span> <span class="nav-text">WeakSet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Map"><span class="nav-number">12.</span> <span class="nav-text">Map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WeakMap"><span class="nav-number">13.</span> <span class="nav-text">WeakMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Proxy"><span class="nav-number">14.</span> <span class="nav-text">Proxy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reflect"><span class="nav-number">15.</span> <span class="nav-text">Reflect</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Class"><span class="nav-number">16.</span> <span class="nav-text">Class</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Module"><span class="nav-number">17.</span> <span class="nav-text">Module</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Iterator"><span class="nav-number">18.</span> <span class="nav-text">Iterator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Promise"><span class="nav-number">19.</span> <span class="nav-text">Promise</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Generator"><span class="nav-number">20.</span> <span class="nav-text">Generator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Async"><span class="nav-number">21.</span> <span class="nav-text">Async</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">22.</span> <span class="nav-text">参考</span></a></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%89%8D%E8%A8%80"><span class="nav-number">1.</span> <span class="nav-text">前言</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#ES6%E7%89%B9%E6%80%A7"><span class="nav-number"></span> <span class="nav-text">ES6特性</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E"><span class="nav-number">1.</span> <span class="nav-text">声明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E6%9E%84%E8%B5%8B%E5%80%BC"><span class="nav-number">2.</span> <span class="nav-text">解构赋值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%89%A9%E5%B1%95"><span class="nav-number">3.</span> <span class="nav-text">字符串扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E5%80%BC%E6%89%A9%E5%B1%95"><span class="nav-number">4.</span> <span class="nav-text">数值扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%B9%E8%B1%A1%E6%89%A9%E5%B1%95"><span class="nav-number">5.</span> <span class="nav-text">对象扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B0%E7%BB%84%E6%89%A9%E5%B1%95"><span class="nav-number">6.</span> <span class="nav-text">数组扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%87%BD%E6%95%B0%E6%89%A9%E5%B1%95"><span class="nav-number">7.</span> <span class="nav-text">函数扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%AD%A3%E5%88%99%E6%89%A9%E5%B1%95"><span class="nav-number">8.</span> <span class="nav-text">正则扩展</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Symbol"><span class="nav-number">9.</span> <span class="nav-text">Symbol</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Set"><span class="nav-number">10.</span> <span class="nav-text">Set</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WeakSet"><span class="nav-number">11.</span> <span class="nav-text">WeakSet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Map"><span class="nav-number">12.</span> <span class="nav-text">Map</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WeakMap"><span class="nav-number">13.</span> <span class="nav-text">WeakMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Proxy"><span class="nav-number">14.</span> <span class="nav-text">Proxy</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Reflect"><span class="nav-number">15.</span> <span class="nav-text">Reflect</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Class"><span class="nav-number">16.</span> <span class="nav-text">Class</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Module"><span class="nav-number">17.</span> <span class="nav-text">Module</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Iterator"><span class="nav-number">18.</span> <span class="nav-text">Iterator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Promise"><span class="nav-number">19.</span> <span class="nav-text">Promise</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Generator"><span class="nav-number">20.</span> <span class="nav-text">Generator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Async"><span class="nav-number">21.</span> <span class="nav-text">Async</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83"><span class="nav-number">22.</span> <span class="nav-text">参考</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 
